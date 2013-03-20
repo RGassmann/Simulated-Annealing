@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include<sys/types.h>
-#include <time.h>
 #include <math.h>
 
 #if defined(_POSIX_TIMERS) && _POSIX_TIMERS > 0
@@ -13,7 +11,7 @@
 
 
 int gen_rand(void)
-/* returns random number in range of 0 to 99 */
+/* returns random number in range of 0 to 999999 */
 {
  struct timespec ts;
 #if defined(_POSIX_TIMERS) && _POSIX_TIMERS > 0
@@ -27,74 +25,64 @@ ts.tv_nsec = tv.tv_usec * 1000;
 	srandom(ts.tv_nsec);	
    return(random()%1000000);
 }
-double fkt(double x1, double x2){
-	return 500 -20*x1-26*x2-4*x1*x2+4*x1*x1+3*x2*x2;
-}
-void SimAnn();
+
 
 typedef struct{
-	double x;
-	double y;
-	double res;
-	}dPoint;
+	double *x;
+	double temp;
+	}DesignPoint_t;
 
-void pfkt(dPoint *p){
-	p->res = fkt(p->x,p->y);
-}
+typedef struct{
+	int iterations; 	/* Number of Iterations per Temp-Cycle */
+	int vicinity;		/* The Vicinity a next design point might be in */
+	double tempCoeff;	/* The Temperature Coefficient Typically between 0.4-0.9 */
+	double temp;		/* Temperature */
+	DesignPoint_t	dP;	/* Design Point */
+	optim_t *optim;	/* The Optimization Problem to solve*/
+}Simulated_Annealing_Param_t;
 
 int main()
 {
-int n =2, vicinity = 6;
-double c = 0.5, temp;
-
-dPoint p1;
-p1.x=2; p1.y=0; p1.res = fkt(p1.x,p1.y);
-
-dPoint p2;
-p2.x=5; p2.y=10; p2.res = fkt(p2.x,p2.y);
-
-dPoint p3;
-p3.x=8; p3.y=5; p3.res = fkt(p3.x,p3.y);
-
-dPoint p4;
-p4.x=10; p4.y=10; p4.res = fkt(p4.x,p4.y);
-
-temp = (p1.res + p2.res + p3.res + p4.res)/4;
-
-printf("Starttemperatur = %lf\n",temp);
-
 SimAnn();
-/*
-for(n =0; n < 100; n++){
-printf("Z = %lf\n",gen_rand()/1000000.00);
-}*/
 
 return 0;
 }
 
+void fillRandom(int n /*dimension*/, double *min, double *max, double *x){
+	int i =0;
+	for(i=0; i < n /*dimension*/;i++){
+		domainwidth = max[i]-min[i];
+		x[i] =min[i] + domainwidth * gen_rand()/100000;
+	}
+}
 
-void SimAnn(){
+double generateInitialTemp(int amount, Simulated_Annealing_Param_t *param){
+	int i =0;
+	double *x;
+	double temp;
+	temp = (double*) calloc( amount , sizeof(double);
+	for(i =0; i< amount; i++){
+		x = (double*) calloc( param->optim->n , sizeof(double);
+		fillRandom( param->optim->n , param->optim->min , param->optim->max , x );
+		temp += param->optim->f(param->optim,x);
+		free(x);
+	}
+	temp/=amount;
+	return temp;
+}
 
-FILE *file;
-file = fopen("file.txt","a+");
-	dPoint *designPoints;
-	dPoint test;
+
+void SimAnn(Simulated_Annealing_Param_t *param){
+
+	FILE *file;
+	file = fopen("file.txt","a+");
+
 	int n =100, i=0, vicinity = 10, index =0;
 	double c = 0.6, temp, temp_old, delta = 0, ecriterion = 5;
 
-	dPoint p1;
-	p1.x=2; p1.y=0; p1.res = fkt(p1.x,p1.y);
 
-	dPoint p2;
-	p2.x=5; p2.y=10; p2.res = fkt(p2.x,p2.y);
+	if(param->temp == 0) param->temp = generateInitialTemp(10, param);	
 
-	dPoint p3;
-	p3.x=8; p3.y=5; p3.res = fkt(p3.x,p3.y);
-
-	dPoint p4;
-	p4.x=10; p4.y=10; p4.res = fkt(p4.x,p4.y);
-
-	temp = 1500;//(p1.res + p2.res + p3.res + p4.res)/4;
 	enum{SAinit, SAnewDPoint, SAMetropolisCrit, SAReduceTemp, SAStop}state;
 
 	state = SAinit;
@@ -104,19 +92,19 @@ file = fopen("file.txt","a+");
 	{
 		switch(state){
 			case SAinit:
-				designPoints = (dPoint *) malloc(4096*sizeof(test));
-				if(designPoints == NULL){
+				param->dP->x = (double *) calloc(param->n, sizeof(double));
+				
+				if(param->dP->x == NULL){
 					state = SAStop;
-					printf("Error");
+					printf("Error: Could not allocate Memory!");
 					break;
 				}
-				designPoints[index].x = -150;
-				designPoints[index].y = 54;
-				pfkt(&designPoints[index]);
-				printf("Starttemperatur = %lf\n",temp);
-				printf("DPoint 1 = %lf\n",  designPoints[index].res);
+				
+				fillRandom( param->optim->n , param->optim->min , param->optim->max , param->dP->x );
+				param->dP->temp = param->optim->f( param->optim , param->dP->x );
+
+				printf("Starttemperatur = %lf\n", param->temp);
 				state = SAnewDPoint;
-				index+=1;
 				i=1;
 			break;
 			case SAnewDPoint:
@@ -160,7 +148,7 @@ file = fopen("file.txt","a+");
 		
 
 	}
-fclose(file);
+	fclose(file);
 	free(designPoints);
 }
 
