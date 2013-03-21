@@ -72,7 +72,7 @@ void SimAnn(Simulated_Annealing_Param_t *param, const char *filename){
 	FILE *file;
 	file = fopen(filename,"a+");
 	if(file == NULL){
-		fprintf(stderr, "Could not open File!\n");
+		fprintf(stderr, "no file name specified, use -o flag\n");
 		exit(EXIT_FAILURE);
 	}
 
