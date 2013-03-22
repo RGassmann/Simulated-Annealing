@@ -58,7 +58,7 @@ double generateInitialTemp(int amount, Simulated_Annealing_Param_t *param){
 	return temp;
 }
 
-double limit(double min, double val, double max){
+double limit(double min, double max , double val){
 	return MAX(min,MIN(max,val));
 }
 
