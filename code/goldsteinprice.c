@@ -15,10 +15,10 @@ static inline double	sqr(double x) {
 
 static double	goldsteinprice_function(optim_t *optim, double *x) {
 	return ( 1 + sqr( x[0]+x[1]+1 ) * ( 19 - 14*x[0] + 3*sqr(x[0]) - 14*x[1] + 6*x[0]*x[1] + 3*sqr(x[1]) ) ) *
-		( 30 + sqr( 2*x[0] - 3*x[1] )*( 18 - 32*x[0] + 12*sqr(x[0]) + 48x[1] - 36*x[0]*x[1]+ 27*sqr(x[1]) ) );
+		( 30 + sqr( 2*x[0] - 3*x[1] )*( 18 - 32*x[0] + 12*sqr(x[0]) + 48*x[1] - 36*x[0]*x[1]+ 27*sqr(x[1]) ) );
 }
 
-optim_t	prob3 = {
+optim_t	goldsteinprice = {
 	.n = 2,
 	.min = min,
 	.max = max,

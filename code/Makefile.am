@@ -6,7 +6,7 @@
 EXTRA_DIST = configureit
 
 bin_PROGRAMS = optimtest
-pkglib_LTLIBRARIES = prob1.la prob2.la prob3.la
+pkglib_LTLIBRARIES = prob1.la prob2.la prob3.la goldsteinprice.la
 
 prob1_la_LDFLAGS = -module
 prob1_la_SOURCES = prob1.c
@@ -16,6 +16,9 @@ prob2_la_SOURCES = prob2.c
 
 prob3_la_LDFLAGS = -module
 prob3_la_SOURCES = prob3.c
+
+goldsteinprice_la_LDFLAGS = -module
+goldsteinprice_la_SOURCES = goldsteinprice.c
 
 optimtest_SOURCES = test.c optim.c sa.c
 
@@ -27,3 +30,6 @@ test-prob2: optimtest prob2.la
 
 test-prob3: optimtest prob3.la
 	./optimtest -l .libs/prob3.0.so -s prob3
+
+test-goldsteinprice: optimtest goldsteinprice.la
+	./optimtest -l .libs/goldsteinprice.0.so -s goldsteinprice
