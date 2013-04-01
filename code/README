@@ -18,4 +18,21 @@ Run
 	-----
 	Example
 	./optimtest -l .libs/prob2.so -s prob2 -o prob2.txt
+	
+	
+	
+	
+	GENERAL EXAMPLES
+	------
+		Goldstein-Price
+		-----
+		./optimtest -l .libs/goldsteinprice.so -s goldsteinprice -o out.txt
+		
+		Iterations	30
+		Vacinity	0.25
+		TempCoef	0.6
+		End-Temp	0.05
+		
+		-> Minima at f(0,-1) = 3
+		
 
