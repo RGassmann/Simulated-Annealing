@@ -6,7 +6,7 @@
 EXTRA_DIST = configureit
 
 bin_PROGRAMS = optimtest
-pkglib_LTLIBRARIES = prob1.la prob2.la prob3.la goldsteinprice.la beale.la booth.la bulkinN6.la easom.la matyas.la three_hump_camel.la
+pkglib_LTLIBRARIES = prob1.la prob2.la prob3.la goldsteinprice.la beale.la booth.la bulkinN6.la easom.la matyas.la three_hump_camel.la roman.la
 
 prob1_la_LDFLAGS = -module
 prob1_la_SOURCES = prob1.c
@@ -37,6 +37,9 @@ matyas_la_SOURCES = matyas.c
 
 three_hump_camel_la_LDFLAGS = -module
 three_hump_camel_la_SOURCES = three_hump_camel.c
+
+roman_la_LDFLAGS = -module
+roman_la_SOURCES = roman.c
 
 optimtest_SOURCES = test.c optim.c sa.c
 
@@ -70,3 +73,6 @@ test-matyas: optimtest matyas.la
 
 test-three_hump_camel: optimtest three_hump_camel.la
 	./optimtest -l .libs/three_hump_camel.0.so -s three_hump_camel
+
+test-roman: optimtest roman.la
+	./optimtest -l .libs/roman.0.so -s roman
