@@ -34,5 +34,14 @@ Run
 		End-Temp	0.05
 		
 		-> Minima at f(0,-1) = 3
+
+		Roman
+		-----
+		./optimtest -l .libs/roman.so -s roman -o romanOUT.txt
+
+		Iterations	50
+		Vacinity	0.5
+		TempCoef	0.6
+		End-Temp	0.0005	
 		
 
